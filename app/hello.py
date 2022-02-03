@@ -15,7 +15,8 @@ migrate = Migrate(app, db)
 
 @app.route('/')
 def index():
-    return render_template('index.html', name='Marry')
+    # return render_template('index.html', name='Marry')
+    return render_template('index.html')
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -37,5 +38,7 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+# if __main__ == __name__
 
 
