@@ -44,3 +44,5 @@ env
 # Environment files
 .env
 .env-mysql
+
+.vscode
