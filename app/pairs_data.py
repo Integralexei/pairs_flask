@@ -4,9 +4,9 @@ from datetime import timedelta
 import sys
 
 def get_data(stock):
-    data = yf.download(stock, start="2022-01-04", end="2022-01-04")
-    print(data)
-    # return data
+    data = yf.download(stock, start="2014-01-04", end="2022-01-04")
+#     print(data['Close'])
+    return data
 
 # get at 08.02.2022 from https://www.slickcharts.com/sp500
 sp500 = "AAPL MSFT AMZN GOOGL GOOG TSLA NVDA BRK-B FB UNH JPM JNJ PG V HD BAC XOM MA PFE CVX DIS ABBV AVGO ADBE KO PEP CSCO TMO WFC COST ABT CMCSA VZ ACN CRM WMT QCOM INTC MRK MCD LLY NKE DHR NFLX T UPS PM LOW TXN UNP INTU LIN MS AMD NEE BMY CVS PYPL RTX SCHW MDT HON C ORCL AMGN GS AMAT IBM COP AXP BA BLK NOW \
@@ -19,7 +19,7 @@ sp500 = "AAPL MSFT AMZN GOOGL GOOG TSLA NVDA BRK-B FB UNH JPM JNJ PG V HD BAC XO
                                  NLSN VNO RL FOX IPGP DISCA UAA UA NWS" 
 
 start_time = time.monotonic()
-get_data(sp500)
+# get_data(sp500)
 # get_data('AAPL')
 end_time = time.monotonic()
 print(timedelta(seconds=end_time - start_time))
