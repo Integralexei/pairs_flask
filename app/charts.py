@@ -15,7 +15,7 @@ second_x = data2.index
 second_y = data2.values
 
 # # plot liness
-plt.title('График спреда возвратов двух инструментов')
+plt.title('График спреда инструментов\n c учетом коэффициента')
 plt.plot(first_x, first_y, label = instrum1)
 plt.plot(second_x, second_y, label = instrum2)
 plt.ylabel('Разница в % возврата')
