@@ -13,40 +13,41 @@
 <body>
 <div id="element1">
     <img src="../static/img/chart1.png" alt="Image">
+    
 </div>
 <div id="element2">
     <p>График спреда.</p>
     <p>Построен с помощью метода наименьших квадратов(OLS method). </p>
     <p>Возвраты(Returns) одного инструмента, за период, вычтены из возвратов второго, с определенным коэффициентом.</p>
     <p>На данном графике показано соотношение разницы возвратов(Returns) за N лет. </p>
-    <!-- <ul>
-        {% for city_id, city_name in cities %}
-            <li><a href="{{ url_for('city', city_id=city_id) }}">{{ city_name }}</a></li>
-        {% endfor %}
-    </ul> -->
 </div>
-<div >
-    <img src="../static/img/chart1.png" alt="Image">
-</div>
-<!-- <div class="container">
-    <div class="row">
-        <div class="col-6">
-            <canvas id="canvas"></canvas>
-        </div>
-        <div class="col">
-            2 из 2
-        </div>
-    </div>
-</div> -->
-
 <div id="element3">
     <canvas id="canvas"></canvas>
 </div>
 
+<!-- <div id="element2">
+    <p>График спреда.</p>
+    <p>Построен с помощью метода наименьших квадратов(OLS method). </p>
+    <p>Возвраты(Returns) одного инструмента, за период, вычтены из возвратов второго, с определенным коэффициентом.</p>
+    <p>На данном графике показано соотношение разницы возвратов(Returns) за N лет. </p>
+</div> -->
+<hr>
+<div id="element1">
+    <img src="../static/img/chart1.png" alt="Image">
+</div>
+<div id="element2">
+    <p>График спреда.</p>
+    <p>Построен с помощью метода наименьших квадратов(OLS method). </p>
+    <p>Возвраты(Returns) одного инструмента, за период, вычтены из возвратов второго, с определенным коэффициентом.</p>
+    <p>На данном графике показано соотношение разницы возвратов(Returns) за N лет. </p>
+</div>
+<hr>
+
+<hr>
+
+<!-- https://github.com/roniemartinez/real-time-charts-with-flask/blob/master/templates/index.html JSCode and streaming in index is from this tutorial -->
 <!--suppress JSUnresolvedLibraryURL -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-<!--suppress JSUnresolvedLibraryURL -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
 <!--suppress JSUnresolvedLibraryURL -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
 <script>
@@ -104,7 +105,7 @@
 
         source.onmessage = function (event) {
             const data = JSON.parse(event.data);
-            if (config.data.labels.length === 20) {
+            if (config.data.labels.length === 100) {
                 config.data.labels.shift();
                 config.data.datasets[0].data.shift();
             }
