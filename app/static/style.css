@@ -15,3 +15,13 @@ body
     text-align: right; 
     width: 25%;
 }
+
+#element3
+{
+    display: inline-block;
+    /* vertical-align: top; */
+    /* margin-top: 90px; */
+    /* text-align: right;  */
+    width: 35%;
+}
+
