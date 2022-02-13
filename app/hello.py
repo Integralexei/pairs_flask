@@ -48,7 +48,7 @@ def get_line_stream():
         api_key = os.environ.get('API_KEY_EXANTE_DEMO')
         token = os.environ.get('TOKEN_EXANTE_DEMO')
         headers={'Accept':'application/x-json-stream'}
-        r = requests.get('https://api-demo.exante.eu/md/3.0/feed/trades/ETH.USD',stream=True, headers=headers, auth=(api_key,token))
+        r = requests.get('https://api-demo.exante.eu/md/3.0/feed/trades/BTC.USD',stream=True, headers=headers, auth=(api_key,token))
         print(r)
         for chunk in r.iter_lines(chunk_size=1):
             if chunk:
