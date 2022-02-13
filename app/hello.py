@@ -44,23 +44,25 @@ def chart_data():
     return Response(generate_random_data(), mimetype='text/event-stream')
 
 
-def get_line_stream():
+def get_line_stream(ticker):
         api_key = os.environ.get('API_KEY_EXANTE_DEMO')
         token = os.environ.get('TOKEN_EXANTE_DEMO')
         headers={'Accept':'application/x-json-stream'}
-        r = requests.get('https://api-demo.exante.eu/md/3.0/feed/trades/BTC.USD',stream=True, headers=headers, auth=(api_key,token))
-        print(r)
+        r = requests.get(f'https://api-demo.exante.eu/md/3.0/feed/trades/{ticker}',stream=True, headers=headers, auth=(api_key,token))
+        print(f'{r}___{ticker}')
         for chunk in r.iter_lines(chunk_size=1):
             if chunk:
                 yield chunk.decode('utf8')
 
-streamExante = get_line_stream() 
+streamExante1 = get_line_stream('BTC.USD') 
+# streamExante2 = get_line_stream('ETH.USD') 
+# streamExante_second_paper = get_line_stream('ETH.USD') 
 
 @app.route('/chart-data1')
 def chart_data1():
     def generate_data():
         date_obj = datetime.now()
-        for i in streamExante:
+        for i in streamExante1:
             i = json.loads(i)
             if "price" in i: 
                 date_obj = datetime.fromtimestamp(i['timestamp']//1000)
@@ -72,6 +74,25 @@ def chart_data1():
                 continue
 
     return Response(generate_data(), mimetype='text/event-stream')
+
+# @app.route('/chart-data1')
+# def chart_data1():
+#     def generate_data():
+#         date_obj = datetime.now()
+#         for i in zip(streamExante1,streamExante2):
+#             print(i)
+#             i = json.loads(i)
+#             if "price" in i: 
+#                 date_obj = datetime.fromtimestamp(i['timestamp']//1000)
+#                 i['timestamp'] = str(datetime.fromtimestamp(i['timestamp']//1000))
+#                 json_data = json.dumps({'time': i['timestamp'][-8:], 'value': float(i['price'])})
+#                 print(json_data, 'jsondata')
+#                 yield f"data:{json_data}\n\n"
+#             else:   
+#                 continue
+
+#     return Response(generate_data(), mimetype='text/event-stream')
+
 
 # class Role(db.Model): .
 #     __tablename__ = 'roles'
