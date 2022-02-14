@@ -11,10 +11,6 @@ import requests
 
 
 load_dotenv()
-# env_path = r'C:\py_proj\pairs_flask\.env'
-# load_dotenv(dotenv_path=env_path)
-
-
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:{os.environ.get("POSTGRES_PASS")}@localhost/pairs_flask'
@@ -53,23 +49,33 @@ def get_line_stream(ticker):
         for chunk in r.iter_lines(chunk_size=1):
             if chunk:
                 yield chunk.decode('utf8')
+                # yield chunk
 
 streamExante1 = get_line_stream('BTC.USD') 
-# streamExante2 = get_line_stream('ETH.USD') 
+streamExante2 = get_line_stream('ETH.USD') 
 # streamExante_second_paper = get_line_stream('ETH.USD') 
 
 @app.route('/chart-data1')
 def chart_data1():
     def generate_data():
         date_obj = datetime.now()
-        for i in streamExante1:
-            i = json.loads(i)
-            if "price" in i: 
-                date_obj = datetime.fromtimestamp(i['timestamp']//1000)
-                i['timestamp'] = str(datetime.fromtimestamp(i['timestamp']//1000))
-                json_data = json.dumps({'time': i['timestamp'][-8:], 'value': float(i['price'])})
-                print(json_data, 'jsondata')
+        for i in zip(streamExante1, streamExante2) :
+            i = [json.loads(x) for x in i] # convert str to type json
+            if "price" in i[0] and "price" in i[1]: 
+                date_obj = [datetime.fromtimestamp(x['timestamp']//1000) for x in i]
+                # if i[0]['timestamp'] == i[1]['timestamp']:
+                i[0]['timestamp'] = str(date_obj[0])[-8:]
+                i[1]['timestamp'] = str(date_obj[1])[-8:]
+                print(f'{i}\n\n')
+                json_data1 = i[0]
+                json_data2 = i[1]
+                json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
+                                        'time2': json_data2['timestamp'], 'value2': float(json_data2['price'])})
+                # print(f'{json_data1}\n{json_data2}')
                 yield f"data:{json_data}\n\n"
+      
+                # else:
+                #     continue
             else:   
                 continue
 
