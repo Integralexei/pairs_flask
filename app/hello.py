@@ -47,31 +47,62 @@ def get_line_stream(ticker):
         r = requests.get(f'https://api-demo.exante.eu/md/3.0/feed/trades/{ticker}',stream=True, headers=headers, auth=(api_key,token))
         print(f'{r}___{ticker}')
         for chunk in r.iter_lines(chunk_size=1):
-            print()
             if chunk:
-                yield chunk.decode('utf8')
+                yield json.loads(chunk.decode('utf8'))   # convert str to type json
 
 
-@app.route('/chart-data1')
-def chart_data1():
-    def generate_data():
-        date_obj = datetime.now()
-        for i in zip(get_line_stream('SBER.MICEX'), get_line_stream('SBERP.MICEX')) :
-            i = [json.loads(x) for x in i] # convert str to type json
-            if "price" in i[0] and "price" in i[1]: 
+def synchronized_streams():
+    time_list = [0, 1]
+    first_paper = get_line_stream('AAPL.NASDAQ')
+    second_paper = get_line_stream('MSFT.NASDAQ')
+    for i in zip(first_paper, second_paper) :
+        if time_list[0] == time_list[1]:
+            print(time_list)
+            time_list = [0, 1]
+        else:
+            if "price" in i[0] and "price" in i[1]:
                 date_obj = [datetime.fromtimestamp(x['timestamp']//1000) for x in i]
                 i[0]['timestamp'] = str(date_obj[0])[-8:]
                 i[1]['timestamp'] = str(date_obj[1])[-8:]
-                print(f'{i}\n\n')
-                json_data1 = i[0]
-                json_data2 = i[1]
-                json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
-                                        'time2': json_data2['timestamp'], 'value2': float(json_data2['price'])})
-                yield f"data:{json_data}\n\n"
-            else:   
-                continue
+                if i[0]['timestamp'] > i[1]['timestamp']:
+                        time_list[0] = i[0]
+                        print(time_list)
+                        continue
+                elif i[0]['timestamp'] < i[1]['timestamp'] and time_list[0] != 0:
+                        time_list[1] = i[1]
+                        print(time_list)
+                        continue
+                else:
+                    continue
+                        
+           
+                   
+         
 
-    return Response(generate_data(), mimetype='text/event-stream')
+synchronized_streams()
+        
+
+# @app.route('/chart-data1')
+# def chart_data1():
+#     def generate_data():
+#         # date_obj = datetime.now()
+#         first_paper = get_line_stream('SBER.MICEX')
+#         second_paper = get_line_stream('SBERP.MICEX')
+#         for i in zip(first_paper, second_paper) :
+#             if "price" in i[0] and "price" in i[1]: 
+#                 date_obj = [datetime.fromtimestamp(x['timestamp']//1000) for x in i]
+#                 i[0]['timestamp'] = str(date_obj[0])[-8:]
+#                 i[1]['timestamp'] = str(date_obj[1])[-8:]
+#                 print(f'{i}\n\n')
+#                 json_data1 = i[0]
+#                 json_data2 = i[1]
+#                 json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
+#                                         'time2': json_data2['timestamp'], 'value2': float(json_data2['price'])})
+#                 yield f"data:{json_data}\n\n"
+#             else:   
+#                 continue
+
+#     return Response(generate_data(), mimetype='text/event-stream')
 
 
 # class Role(db.Model): .
