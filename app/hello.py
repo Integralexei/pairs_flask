@@ -52,14 +52,12 @@ def get_line_stream(ticker):
 
 
 
-
 def synchronized_streams(paper1, paper2):
     lst = ['00:00:00']
     lst2 = ['00:00:00']
     first_paper = get_line_stream(paper1)
     second_paper = get_line_stream(paper2)
     for paper1 in first_paper:
-        # print('1')
         if "price" in paper1:
             date_obj1 = datetime.fromtimestamp(paper1['timestamp']//1000)
             paper1['timestamp'] = date_obj1.strftime("%H:%M:%S")
@@ -85,8 +83,6 @@ def synchronized_streams(paper1, paper2):
                     continue
         else: 
             continue
-                            
-# synchronized_streams('ETH.USD', 'BTC.USD')
         
 
 @app.route('/chart-data1')
