@@ -51,58 +51,56 @@ def get_line_stream(ticker):
                 yield json.loads(chunk.decode('utf8'))   # convert str to type json
 
 
-def synchronized_streams():
-    time_list = [0, 1]
-    first_paper = get_line_stream('AAPL.NASDAQ')
-    second_paper = get_line_stream('MSFT.NASDAQ')
-    for i in zip(first_paper, second_paper) :
-        if time_list[0] == time_list[1]:
-            print(time_list)
-            time_list = [0, 1]
-        else:
-            if "price" in i[0] and "price" in i[1]:
-                date_obj = [datetime.fromtimestamp(x['timestamp']//1000) for x in i]
-                i[0]['timestamp'] = str(date_obj[0])[-8:]
-                i[1]['timestamp'] = str(date_obj[1])[-8:]
-                if i[0]['timestamp'] > i[1]['timestamp']:
-                        time_list[0] = i[0]
-                        print(time_list)
-                        continue
-                elif i[0]['timestamp'] < i[1]['timestamp'] and time_list[0] != 0:
-                        time_list[1] = i[1]
-                        print(time_list)
-                        continue
-                else:
-                    continue
-                        
-           
-                   
-         
 
-synchronized_streams()
+
+def synchronized_streams(paper1, paper2):
+    lst = ['00:00:00']
+    lst2 = ['00:00:00']
+    first_paper = get_line_stream(paper1)
+    second_paper = get_line_stream(paper2)
+    for paper1 in first_paper:
+        # print('1')
+        if "price" in paper1:
+            date_obj1 = datetime.fromtimestamp(paper1['timestamp']//1000)
+            paper1['timestamp'] = date_obj1.strftime("%H:%M:%S")
+            if paper1['timestamp'] == lst[0]:
+                continue
+            elif paper1['timestamp'] < lst2[0]:
+                continue
+            else:
+                lst[0] = paper1['timestamp']
+            for paper2 in second_paper:
+                if "price" in paper2:
+                    date_obj2 = datetime.fromtimestamp(paper2['timestamp']//1000)
+                    paper2['timestamp'] = date_obj2.strftime("%H:%M:%S")
+                    lst2[0] = paper2['timestamp']
+                    if paper2['timestamp'] == lst[0]:
+                        yield paper1, paper2
+                        lst = ['00:00:00']
+                        break
+                    elif paper2['timestamp'] > lst[0]:
+                        next(first_paper)
+                        break
+                else: 
+                    continue
+        else: 
+            continue
+                            
+# synchronized_streams('ETH.USD', 'BTC.USD')
         
 
-# @app.route('/chart-data1')
-# def chart_data1():
-#     def generate_data():
-#         # date_obj = datetime.now()
-#         first_paper = get_line_stream('SBER.MICEX')
-#         second_paper = get_line_stream('SBERP.MICEX')
-#         for i in zip(first_paper, second_paper) :
-#             if "price" in i[0] and "price" in i[1]: 
-#                 date_obj = [datetime.fromtimestamp(x['timestamp']//1000) for x in i]
-#                 i[0]['timestamp'] = str(date_obj[0])[-8:]
-#                 i[1]['timestamp'] = str(date_obj[1])[-8:]
-#                 print(f'{i}\n\n')
-#                 json_data1 = i[0]
-#                 json_data2 = i[1]
-#                 json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
-#                                         'time2': json_data2['timestamp'], 'value2': float(json_data2['price'])})
-#                 yield f"data:{json_data}\n\n"
-#             else:   
-#                 continue
+@app.route('/chart-data1')
+def chart_data1():
+    def generate_data():
+        for i in synchronized_streams('SBER.MICEX', 'SBERP.MICEX'):
+            json_data1 = i[0]
+            json_data2 = i[1]
+            json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
+                                    'time2': json_data2['timestamp'], 'value2': float(json_data2['price'])})
+            yield f"data:{json_data}\n\n"
+            
 
-#     return Response(generate_data(), mimetype='text/event-stream')
+    return Response(generate_data(), mimetype='text/event-stream')
 
 
 # class Role(db.Model): .
