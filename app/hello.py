@@ -92,7 +92,7 @@ def synchronized_streams(paper1, paper2):
 @app.route('/chart-data1')
 def chart_data1():
     def generate_data():
-        for i in synchronized_streams('SBER.MICEX', 'SBERP.MICEX'):
+        for i in synchronized_streams('ETH.USD', 'BTC.USD'):
             json_data1 = i[0]
             json_data2 = i[1]
             json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
