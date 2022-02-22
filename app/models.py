@@ -31,7 +31,13 @@ class Post(db.Model):
     content = db.Column(db.Text(), nullable=False)
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
 
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
 
     def __repr__(self):
         return "<{}:{}>".format(self.id,  self.title[:10])
+
+class Post(db.Model):
+    __tablename__ = 'stocks'
+    id = db.Column(db.Integer, primary_key=True)
+    ticker = db.Column(db.String(50), nullable=False)
+#    https://smart-lab.ru/blog/422980.php db schema

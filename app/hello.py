@@ -4,9 +4,7 @@ from flask import Flask, request, render_template, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import json
-import time
 from datetime import datetime
-import random
 import requests
 
 
@@ -16,9 +14,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:{os.environ.get("POSTGRES_PASS")}@localhost/pairs_flask'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+from app.models import *
 migrate = Migrate(app, db)
-
-random.seed()
 
 @app.route('/')
 def index():
@@ -27,17 +24,6 @@ def index():
 @app.route('/boot')
 def boot():
     return render_template('boot.html')
-
-@app.route('/chart-data')
-def chart_data():
-    def generate_random_data():
-        while True:
-            json_data = json.dumps(
-                {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
-            yield f"data:{json_data}\n\n"
-            # time.sleep(1)
-
-    return Response(generate_random_data(), mimetype='text/event-stream')
 
 
 def get_line_stream(ticker):
