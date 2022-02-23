@@ -1,4 +1,4 @@
-from app.hello import db
+from hello import db
 from datetime import datetime
 
 class Role(db.Model): 
@@ -8,9 +8,8 @@ class Role(db.Model):
 
     users = db.relationship('User', backref='role')
 
-
     def __repr__(self):
-        return '<Role %r>' % self.namePost
+        return '<Role %r>' % self.name
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -36,8 +35,15 @@ class Post(db.Model):
     def __repr__(self):
         return "<{}:{}>".format(self.id,  self.title[:10])
 
-class Post(db.Model):
-    __tablename__ = 'stocks'
+class Symbol(db.Model):
+    __tablename__ = 'symbols'
     id = db.Column(db.Integer, primary_key=True)
-    ticker = db.Column(db.String(50), nullable=False)
+    symbol_name = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return '<Ticker %r>' % self.ticker
+    
+    def __repr__(self):
+        return "< Symbol {}>".format(self.symbol_name)
+
 #    https://smart-lab.ru/blog/422980.php db schema
