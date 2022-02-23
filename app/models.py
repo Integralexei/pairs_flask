@@ -1,5 +1,14 @@
 from app.hello import db
 from datetime import datetime
+class Symbol(db.Model):
+    __tablename__ = 'symbols'
+    id = db.Column(db.Integer, primary_key=True)
+    symbol_name = db.Column(db.String(50), nullable=False)
+    
+    def __repr__(self):
+        return "< Symbol {}>".format(self.symbol_name)
+
+#    https://smart-lab.ru/blog/422980.php db schema
 
 # class Role(db.Model): 
 #     __tablename__ = 'roles'
@@ -34,13 +43,3 @@ from datetime import datetime
 
 #     def __repr__(self):
 #         return "<{}:{}>".format(self.id,  self.title[:10])
-
-class Symbol(db.Model):
-    __tablename__ = 'symbols'
-    id = db.Column(db.Integer, primary_key=True)
-    symbol_name = db.Column(db.String(50), nullable=False)
-    
-    def __repr__(self):
-        return "< Symbol {}>".format(self.symbol_name)
-
-#    https://smart-lab.ru/blog/422980.php db schema
