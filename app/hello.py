@@ -11,7 +11,8 @@ import requests
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:{os.environ.get("POSTGRES_PASS")}@localhost/pairs_flask'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:7788@localhost/pairs_flask'
+# app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:{os.environ.get("POSTGRES_PASS")}@localhost/pairs_flask'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 from app.models import *
@@ -34,7 +35,9 @@ def get_line_stream(ticker):
         print(f'{r}___{ticker}')
         for chunk in r.iter_lines(chunk_size=1):
             if chunk:
+                print(json.loads(chunk.decode('utf8')))
                 yield json.loads(chunk.decode('utf8'))   # convert str to type json
+                
 
 
 
@@ -74,7 +77,8 @@ def synchronized_streams(paper1, paper2):
 @app.route('/chart-data1')
 def chart_data1():
     def generate_data():
-        for i in synchronized_streams('ETH.USD', 'BTC.USD'):
+        # for i in synchronized_streams('BTC.USD', 'ETH.USD'):
+        for i in synchronized_streams('SBER.MICEX', 'SBERP.MICEX'):
             json_data1 = i[0]
             json_data2 = i[1]
             json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
@@ -87,5 +91,8 @@ def chart_data1():
 
 if __name__ == "__main__":
     app.run(debug=True, threaded = True)
+
+# if __name__ == "__main__":
+#     app.run()
 
 
