@@ -11,11 +11,10 @@ import requests
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:7788@localhost/pairs_flask'
-# app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:{os.environ.get("POSTGRES_PASS")}@localhost/pairs_flask'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://postgres:{os.environ.get("POSTGRES_PASS")}@localhost/pairs_flask'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-from app.models import *
+from models import *
 migrate = Migrate(app, db)
 
 @app.route('/')
@@ -79,6 +78,7 @@ def chart_data1():
     def generate_data():
         # for i in synchronized_streams('BTC.USD', 'ETH.USD'):
         for i in synchronized_streams('SBER.MICEX', 'SBERP.MICEX'):
+        # for i in synchronized_streams('EPAM.NYSE', 'ALGN.NASDAQ'):
             json_data1 = i[0]
             json_data2 = i[1]
             json_data = json.dumps({'time1': json_data1['timestamp'], 'value1': float(json_data1['price']),
