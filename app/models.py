@@ -1,5 +1,6 @@
-from app.hello import db
+from hello import db
 from datetime import datetime
+
 class Symbol(db.Model):
     __tablename__ = 'symbols'
     id = db.Column(db.Integer, primary_key=True)
