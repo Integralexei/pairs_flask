@@ -15,7 +15,7 @@ class Price(db.Model):
     __tablename__ = 'prices'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, index=True)
-    symbol_name = db.Column(db.String(64), nullable=False, unique=True)
+    symbol_name = db.Column(db.String(64), nullable=False)
     price = db.Column(db.Numeric(16, 4), nullable=False)
 
     symbol_id = db.Column(db.Integer(), db.ForeignKey('symbols.id'), nullable=False)
